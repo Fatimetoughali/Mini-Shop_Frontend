@@ -35,7 +35,15 @@ onMounted(() => {
 
     <footer class="footer">
       <div class="container footer-content">
-        <div class="brand"><span class="logo-text">Mini</span>Shop</div>
+        <div class="brand">
+          <div class="lego-logo-small">
+            <div class="lego-brick-small">
+              <div class="stud-small"></div>
+              <div class="stud-small"></div>
+            </div>
+            <div class="logo-text-group-small"><span class="logo-text-small">Mini</span>Shop</div>
+          </div>
+        </div>
         <p class="copyright">&copy; 2026 MiniShop. Fait avec passion.</p>
         <div class="links">
           <a href="#">Mentions Légales</a>
@@ -116,13 +124,49 @@ onMounted(() => {
   color: var(--text-muted);
 }
 
-.brand {
-  font-weight: 700;
-  color: var(--text-main);
+.lego-logo-small {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.logo-text {
-  color: var(--primary-color);
+.lego-brick-small {
+  width: 24px;
+  height: 15px;
+  background-color: #e60012;
+  border-radius: 1px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.lego-brick-small .stud-small {
+  position: absolute;
+  width: 6px;
+  height: 3px;
+  background-color: #e60012;
+  top: -3px;
+  border-radius: 1px 1px 0 0;
+}
+
+.lego-brick-small .stud-small:nth-child(1) {
+  left: 4px;
+}
+.lego-brick-small .stud-small:nth-child(2) {
+  right: 4px;
+}
+
+.logo-text-group-small {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #333;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+  font-family: 'Arial Black', sans-serif;
+}
+
+.logo-text-small {
+  color: #ffcf00;
+  -webkit-text-stroke: 0.5px #e60012;
 }
 
 .links {

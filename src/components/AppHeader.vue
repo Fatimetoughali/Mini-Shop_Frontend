@@ -19,8 +19,13 @@ const switchLanguage = (lang) => {
   <header class="header">
     <div class="container header-content">
       <router-link to="/" class="logo">
-        <span class="logo-icon">🛍️</span>
-        <span class="logo-text">Mini</span>Shop
+        <div class="lego-logo">
+          <div class="lego-brick">
+            <div class="stud"></div>
+            <div class="stud"></div>
+          </div>
+          <div class="logo-text-group"><span class="logo-text">Mini</span>Shop</div>
+        </div>
       </router-link>
 
       <nav class="nav-menu">
@@ -123,18 +128,55 @@ const switchLanguage = (lang) => {
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--text-main);
   text-decoration: none;
-  letter-spacing: -0.5px;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+}
+
+.lego-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.lego-brick {
+  width: 32px;
+  height: 20px;
+  background-color: #e60012; /* Lego Red */
+  border-radius: 2px;
+  position: relative;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.lego-brick .stud {
+  position: absolute;
+  width: 8px;
+  height: 4px;
+  background-color: #e60012;
+  top: -4px;
+  border-radius: 1px 1px 0 0;
+}
+
+.lego-brick .stud:nth-child(1) {
+  left: 5px;
+}
+.lego-brick .stud:nth-child(2) {
+  right: 5px;
+}
+
+.logo-text-group {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #333;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  font-family: 'Arial Black', sans-serif;
 }
 
 .logo-text {
-  color: var(--primary-color);
+  color: #ffcf00; /* Lego Yellow */
+  -webkit-text-stroke: 1px #e60012;
 }
 
 .nav-menu {
