@@ -19,12 +19,26 @@ const switchLanguage = (lang) => {
   <header class="header">
     <div class="container header-content">
       <router-link to="/" class="logo">
-        <div class="lego-logo">
-          <div class="lego-brick">
-            <div class="stud"></div>
-            <div class="stud"></div>
+        <div class="brand-logo">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="bag-icon"
+          >
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+            <path d="M3 6h18"></path>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <div class="logo-text-wrapper">
+            <span class="logo-main">Mini</span><span class="logo-sub">Shop</span>
           </div>
-          <div class="logo-text-group"><span class="logo-text">Mini</span>Shop</div>
         </div>
       </router-link>
 
@@ -129,54 +143,33 @@ const switchLanguage = (lang) => {
 
 .logo {
   text-decoration: none;
-  display: flex;
-  align-items: center;
 }
 
-.lego-logo {
+.brand-logo {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.lego-brick {
-  width: 32px;
-  height: 20px;
-  background-color: #e60012; /* Lego Red */
-  border-radius: 2px;
-  position: relative;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
+.bag-icon {
+  color: var(--primary-color);
+  filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.2));
 }
 
-.lego-brick .stud {
-  position: absolute;
-  width: 8px;
-  height: 4px;
-  background-color: #e60012;
-  top: -4px;
-  border-radius: 1px 1px 0 0;
-}
-
-.lego-brick .stud:nth-child(1) {
-  left: 5px;
-}
-.lego-brick .stud:nth-child(2) {
-  right: 5px;
-}
-
-.logo-text-group {
+.logo-text-wrapper {
   font-size: 1.5rem;
-  font-weight: 900;
-  color: #333;
-  letter-spacing: -1px;
-  text-transform: uppercase;
-  font-family: 'Arial Black', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
 }
 
-.logo-text {
-  color: #ffcf00; /* Lego Yellow */
-  -webkit-text-stroke: 1px #e60012;
+.logo-main {
+  color: var(--primary-color);
+}
+
+.logo-sub {
+  color: var(--text-main);
 }
 
 .nav-menu {
