@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 // Configuration de l'URL de base de votre API Laravel
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || 'https://morning-escarpment-60598-854031287859.herokuapp.com/api'
 
 // Création d'une instance Axios avec configuration par défaut
 const apiClient = axios.create({

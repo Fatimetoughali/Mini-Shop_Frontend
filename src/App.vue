@@ -36,20 +36,69 @@ onMounted(() => {
     <footer class="footer">
       <div class="container footer-content">
         <div class="brand">
-          <div class="lego-logo-small">
-            <div class="lego-brick-small">
-              <div class="stud-small"></div>
-              <div class="stud-small"></div>
+          <div class="brand-logo-footer">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="bag-icon-footer"
+            >
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+              <path d="M3 6h18"></path>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <div class="logo-text-footer">
+              <span class="logo-main">Mini</span><span class="logo-sub">Shop</span>
             </div>
-            <div class="logo-text-group-small"><span class="logo-text-small">Mini</span>Shop</div>
           </div>
         </div>
         <p class="copyright">&copy; 2026 MiniShop. Fait avec passion.</p>
         <div class="links">
-          <a href="#">Mentions Légales</a>
-          <a href="https://api.whatsapp.com/send?phone=22241613030" target="_blank"
-            >Contact WhatsApp</a
+          <a href="#" class="footer-link">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            Mentions Légales
+          </a>
+          <a
+            href="https://api.whatsapp.com/send?phone=22241613030"
+            target="_blank"
+            class="footer-link"
           >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-10.6 8.5 8.5 0 0 1 7.6 10.6 Z"
+              />
+              <path d="M16 12l-4 4-4-4" />
+            </svg>
+            Contact WhatsApp
+          </a>
         </div>
       </div>
     </footer>
@@ -83,12 +132,12 @@ onMounted(() => {
   height: 60px;
   bottom: 40px;
   right: 40px;
-  background-color: #25d366;
+  background-color: var(--primary-color);
   color: #fff;
   border-radius: 50px;
   text-align: center;
   font-size: 30px;
-  box-shadow: 2px 2px 3px #999;
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -124,49 +173,28 @@ onMounted(() => {
   color: var(--text-muted);
 }
 
-.lego-logo-small {
+.brand-logo-footer {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.lego-brick-small {
-  width: 24px;
-  height: 15px;
-  background-color: #e60012;
-  border-radius: 1px;
-  position: relative;
-  flex-shrink: 0;
+.bag-icon-footer {
+  color: var(--primary-color);
 }
 
-.lego-brick-small .stud-small {
-  position: absolute;
-  width: 6px;
-  height: 3px;
-  background-color: #e60012;
-  top: -3px;
-  border-radius: 1px 1px 0 0;
-}
-
-.lego-brick-small .stud-small:nth-child(1) {
-  left: 4px;
-}
-.lego-brick-small .stud-small:nth-child(2) {
-  right: 4px;
-}
-
-.logo-text-group-small {
-  font-size: 1.1rem;
-  font-weight: 900;
-  color: #333;
+.logo-text-footer {
+  font-size: 1.2rem;
+  font-weight: 800;
   letter-spacing: -0.5px;
-  text-transform: uppercase;
-  font-family: 'Arial Black', sans-serif;
 }
 
-.logo-text-small {
-  color: #ffcf00;
-  -webkit-text-stroke: 0.5px #e60012;
+.logo-main {
+  color: var(--primary-color);
+}
+
+.logo-sub {
+  color: var(--text-main);
 }
 
 .links {
@@ -174,7 +202,17 @@ onMounted(() => {
   gap: 2rem;
 }
 
-.links a:hover {
+.footer-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.footer-link:hover {
   color: var(--primary-color);
 }
 

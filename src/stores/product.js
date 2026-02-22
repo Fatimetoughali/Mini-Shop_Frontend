@@ -22,7 +22,7 @@ export const useProductStore = defineStore('product', () => {
     } catch (err) {
       console.error('❌ Erreur lors du chargement des produits:', err)
       error.value =
-        'Impossible de charger les produits. Assurez-vous que le backend est démarré sur http://localhost:8000'
+        'Impossible de charger les produits. Vérifiez votre connexion à l\'API.'
       products.value = []
     } finally {
       loading.value = false
