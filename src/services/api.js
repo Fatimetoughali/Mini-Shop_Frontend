@@ -46,6 +46,8 @@ apiClient.interceptors.response.use(
 // API des produits
 export const productApi = {
   getAll: (params) => apiClient.get('/products', { params }),
+  getAllAdmin: (params = {}) =>
+    apiClient.get('/products', { params: { per_page: 500, limit: 500, ...params } }),
   getById: (id) => apiClient.get(`/products/${id}`),
   create: (data) =>
     apiClient.post('/products', data, {

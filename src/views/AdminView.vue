@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive, watch } from 'vue'
 import { productApi, orderApi, categoryApi } from '@/services/api'
 import { useI18n } from 'vue-i18n'
 
@@ -13,6 +13,13 @@ const error = ref(null)
 const showModal = ref(false)
 const modalMode = ref('add') // 'add' or 'edit'
 const modalTarget = ref('product') // 'product' or 'category'
+const selectedAdminCategory = ref('all')
+
+watch(selectedAdminCategory, (newVal) => {
+  if (currentTab.value === 'products') {
+    fetchProducts(newVal)
+  }
+})
 
 const formData = reactive({
   id: null,
@@ -38,16 +45,19 @@ const getImageUrl = (product) => {
   if (!imagePath) return ''
   if (imagePath.startsWith('http')) return imagePath
   const cleanPath = imagePath.replace(/^storage\//, '')
-  let apiBase = import.meta.env.VITE_API_URL || 'https://morning-escarpment-60598-854031287859.herokuapp.com/api'
+  let apiBase =
+    import.meta.env.VITE_API_URL ||
+    'https://morning-escarpment-60598-854031287859.herokuapp.com/api'
   apiBase = apiBase.replace(/\/api$/, '')
   return `${apiBase}/api/images/${cleanPath}`
 }
 
-const fetchProducts = async () => {
+const fetchProducts = async (categoryId = null) => {
   loading.value = true
   error.value = null
   try {
-    const response = await productApi.getAll()
+    const params = categoryId && categoryId !== 'all' ? { category_id: categoryId } : {}
+    const response = await productApi.getAllAdmin(params)
     products.value = Array.isArray(response.data) ? response.data : response.data.data || []
   } catch (err) {
     console.error(err)
@@ -248,6 +258,7 @@ onMounted(() => {
           :class="['tab-btn', { active: currentTab === 'products' }]"
         >
           {{ t('admin.products') }}
+          <span v-if="products.length" class="count-pill">{{ products.length }}</span>
         </button>
         <button
           @click="switchTab('categories')"
@@ -268,6 +279,19 @@ onMounted(() => {
       <button v-if="currentTab === 'categories'" @click="openAddModal('category')" class="add-btn">
         + {{ t('admin.newCategory') }}
       </button>
+    </div>
+
+    <!-- Filtres -->
+    <div v-if="currentTab === 'products'" class="filter-row">
+      <div class="filter-group">
+        <label>{{ t('admin.categories') }} :</label>
+        <select v-model="selectedAdminCategory" class="admin-select">
+          <option value="all">{{ locale === 'ar' ? 'الكل' : 'Tous les produits' }}</option>
+          <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+            {{ cat.name }}
+          </option>
+        </select>
+      </div>
     </div>
 
     <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
@@ -503,14 +527,61 @@ onMounted(() => {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
-.add-btn {
+.count-pill {
+  background: #e2e8f0;
+  color: #64748b;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 99px;
+  margin-left: 0.5rem;
+  font-weight: 700;
+}
+
+.tab-btn.active .count-pill {
   background: #3b82f6;
   color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
+}
+
+.add-btn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+.filter-row {
+  background: white;
+  padding: 1.25rem 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 2rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.filter-group label {
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 0.9rem;
+}
+
+.admin-select {
+  padding: 0.6rem 1rem;
+  border-radius: 0.75rem;
+  border: 1.5px solid #e2e8f0;
+  min-width: 200px;
   font-weight: 600;
-  border: none;
-  cursor: pointer;
+  color: var(--text-main);
+  outline: none;
+}
+
+.admin-select:focus {
+  border-color: #3b82f6;
 }
 
 .table-container {
