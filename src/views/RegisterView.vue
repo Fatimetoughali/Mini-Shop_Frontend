@@ -82,7 +82,7 @@ const handleRegister = async () => {
             id="email"
             v-model="form.email"
             type="email"
-            placeholder="votre@email.com"
+            placeholder="Votre adresse email"
             class="input-field"
             required
             autocomplete="email"
@@ -97,7 +97,7 @@ const handleRegister = async () => {
             id="phone_number"
             v-model="form.phone_number"
             type="tel"
-            placeholder="22241613030"
+            placeholder="Votre numéro de téléphone"
             class="input-field"
             required
             autocomplete="tel"

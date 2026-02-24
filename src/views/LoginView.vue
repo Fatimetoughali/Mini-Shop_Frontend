@@ -42,7 +42,7 @@ const handleLogin = async () => {
             id="login"
             v-model="form.login"
             type="text"
-            placeholder="votre@email.com ou 22241613030"
+            placeholder="Votre email ou votre numéro"
             class="input-field"
             required
             autocomplete="username"
