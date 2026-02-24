@@ -3,7 +3,6 @@ import { RouterView } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import { useAuthStore } from '@/stores/auth'
 import { onMounted } from 'vue'
-
 import { useI18n } from 'vue-i18n'
 
 const authStore = useAuthStore()
@@ -34,71 +33,93 @@ onMounted(() => {
     </main>
 
     <footer class="footer">
-      <div class="container footer-content">
-        <div class="brand">
-          <div class="brand-logo-footer">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="bag-icon-footer"
-            >
-              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
-              <path d="M3 6h18"></path>
-              <path d="M16 10a4 4 0 0 1-8 0"></path>
-            </svg>
-            <div class="logo-text-footer">
-              <span class="logo-main">Mini</span><span class="logo-sub">Shop</span>
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="brand-logo-footer">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="bag-icon-footer"
+              >
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+                <path d="M3 6h18"></path>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+              <div class="logo-text-footer">
+                <span class="logo-main">Mini</span><span class="logo-sub">Shop</span>
+              </div>
+            </div>
+            <p class="brand-desc">
+              L'excellence à votre portée. Découvrez nos collections exclusives sélectionnées avec
+              soin.
+            </p>
+          </div>
+
+          <div class="footer-nav">
+            <h4 class="footer-title">Navigation</h4>
+            <div class="footer-links">
+              <router-link to="/" class="footer-link">Accueil</router-link>
+              <router-link to="/cart" class="footer-link">Mon Panier</router-link>
+              <router-link to="/login" class="footer-link">Connexion</router-link>
+            </div>
+          </div>
+
+          <div class="footer-contact">
+            <h4 class="footer-title">Support</h4>
+            <div class="footer-links">
+              <a href="#" class="footer-link">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                Mentions Légales
+              </a>
+              <a
+                href="https://api.whatsapp.com/send?phone=22241613030"
+                target="_blank"
+                class="footer-link whatsapp"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-10.6 8.5 8.5 0 0 1 7.6 10.6 Z"
+                  />
+                  <path d="M16 12l-4 4-4-4" />
+                </svg>
+                Contact WhatsApp
+              </a>
             </div>
           </div>
         </div>
-        <p class="copyright">&copy; 2026 MiniShop. Fait avec passion.</p>
-        <div class="links">
-          <a href="#" class="footer-link">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-            Mentions Légales
-          </a>
-          <a
-            href="https://api.whatsapp.com/send?phone=22241613030"
-            target="_blank"
-            class="footer-link"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-10.6 8.5 8.5 0 0 1 7.6 10.6 Z"
-              />
-              <path d="M16 12l-4 4-4-4" />
-            </svg>
-            Contact WhatsApp
-          </a>
+
+        <div class="footer-bottom">
+          <p class="copyright">&copy; 2026 MiniShop. Fait avec passion pour l'excellence.</p>
         </div>
       </div>
     </footer>
@@ -113,8 +134,8 @@ onMounted(() => {
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 448 512"
-        width="24"
-        height="24"
+        width="26"
+        height="26"
         fill="currentColor"
       >
         <path
@@ -128,27 +149,27 @@ onMounted(() => {
 <style scoped>
 .whatsapp-float {
   position: fixed;
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   bottom: 40px;
   right: 40px;
-  background-color: var(--primary-color);
-  color: #fff;
-  border-radius: 50px;
-  text-align: center;
-  font-size: 30px;
-  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
-  z-index: 100;
+  background-color: #25d366;
+  color: white;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+  z-index: 1000;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .whatsapp-float:hover {
-  transform: scale(1.1);
+  transform: scale(1.1) rotate(5deg);
   background-color: #128c7e;
+  box-shadow: 0 15px 30px rgba(37, 211, 102, 0.6);
 }
+
 .app-layout {
   display: flex;
   flex-direction: column;
@@ -160,23 +181,28 @@ onMounted(() => {
 }
 
 .footer {
-  background-color: white;
+  background-color: #fff;
   border-top: 1px solid var(--border-color);
-  padding: 3rem 0;
+  padding: 6rem 0 3rem;
   margin-top: 4rem;
 }
 
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: var(--text-muted);
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
+
+.footer-brand {
+  max-width: 400px;
 }
 
 .brand-logo-footer {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .bag-icon-footer {
@@ -184,60 +210,97 @@ onMounted(() => {
 }
 
 .logo-text-footer {
-  font-size: 1.2rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: -1.5px;
 }
 
 .logo-main {
   color: var(--primary-color);
 }
-
 .logo-sub {
   color: var(--text-main);
 }
 
-.links {
+.brand-desc {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.footer-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer-links {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .footer-link {
+  color: var(--text-muted);
+  font-weight: 600;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  text-decoration: none;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  transition: color 0.2s;
+  gap: 0.75rem;
 }
 
 .footer-link:hover {
   color: var(--primary-color);
+  transform: translateX(5px);
+}
+
+.footer-link.whatsapp:hover {
+  color: #25d366;
+}
+
+.footer-bottom {
+  padding-top: 3rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .page-fade-enter-active,
 .page-fade-leave-active {
   transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+    opacity 0.4s ease,
+    transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .page-fade-enter-from {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(20px);
 }
-
 .page-fade-leave-to {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-20px);
 }
 
-@media (max-width: 640px) {
-  .footer-content {
-    flex-direction: column;
-    gap: 1.5rem;
+@media (max-width: 991px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
     text-align: center;
+    gap: 3rem;
+  }
+  .footer-brand {
+    margin: 0 auto;
+  }
+  .brand-logo-footer {
+    justify-content: center;
+  }
+  .footer-link {
+    justify-content: center;
   }
 }
 </style>
