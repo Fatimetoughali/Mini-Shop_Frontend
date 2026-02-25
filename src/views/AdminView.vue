@@ -59,7 +59,7 @@ const getProofUrl = (path) => {
     import.meta.env.VITE_API_URL ||
     'https://morning-escarpment-60598-854031287859.herokuapp.com/api'
   apiBase = apiBase.replace(/\/api$/, '')
-  return `${apiBase}/storage/${cleanPath}`
+  return `${apiBase}/api/images/${cleanPath}`
 }
 
 const fetchProducts = async (categoryId = null) => {
