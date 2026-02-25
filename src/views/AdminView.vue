@@ -54,6 +54,7 @@ const getImageUrl = (product) => {
 
 const getProofUrl = (path) => {
   if (!path) return ''
+  if (path.startsWith('http')) return path
   const cleanPath = path.replace(/^storage\//, '').replace(/^public\//, '')
   let apiBase =
     import.meta.env.VITE_API_URL ||
