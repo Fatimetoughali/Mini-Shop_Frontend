@@ -73,9 +73,19 @@ export const productApi = {
 export const orderApi = {
   getAll: () => apiClient.get('/orders'),
   getById: (id) => apiClient.get(`/orders/${id}`),
-  checkout: (data) => apiClient.post('/checkout', data),
+  checkout: (data) => {
+    if (data instanceof FormData) {
+      return apiClient.post('/checkout', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+    }
+    return apiClient.post('/checkout', data)
+  },
   getUserOrders: () => apiClient.get('/orders/user'),
   getAllAdmin: () => apiClient.get('/orders/all'),
+  updateStatus: (id, status) => apiClient.put(`/orders-admin/${id}/status`, { status }),
 }
 
 // API d'authentification

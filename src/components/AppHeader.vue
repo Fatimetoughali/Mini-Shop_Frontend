@@ -10,6 +10,32 @@ const authStore = useAuthStore()
 const { t, locale } = useI18n()
 const route = useRoute()
 
+const ordersCount = ref(0)
+const fetchOrdersCount = async () => {
+  if (authStore.isAdmin) {
+    try {
+      const { orderApi } = await import('@/services/api')
+      const response = await orderApi.getAllAdmin()
+      const orders = Array.isArray(response.data) ? response.data : response.data.data || []
+      ordersCount.value = orders.filter((o) => o.status === 'pending').length
+    } catch (e) {
+      console.error('Failed to fetch orders count', e)
+    }
+  }
+}
+
+import { onMounted, onUnmounted } from 'vue'
+let countInterval = null
+
+onMounted(() => {
+  fetchOrdersCount()
+  countInterval = setInterval(fetchOrdersCount, 60000) // Refresh every minute
+})
+
+onUnmounted(() => {
+  if (countInterval) clearInterval(countInterval)
+})
+
 const isMenuOpen = ref(false)
 
 const toggleMenu = () => {
@@ -147,9 +173,10 @@ watch(
           <template v-if="authStore.isAuthenticated">
             <div class="user-group">
               <template v-if="authStore.isAdmin">
-                <router-link to="/admin" class="nav-link admin-link">{{
-                  t('common.admin')
-                }}</router-link>
+                <router-link to="/admin" class="nav-link admin-link">
+                  {{ t('common.admin') }}
+                  <span v-if="ordersCount > 0" class="admin-badge">{{ ordersCount }}</span>
+                </router-link>
               </template>
               <div class="user-info">
                 <span class="username">{{ authStore.user?.name || 'Client' }}</span>
@@ -318,6 +345,23 @@ watch(
   text-transform: uppercase;
   font-size: 0.8rem;
   letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-badge {
+  background: #ef4444;
+  color: white;
+  font-size: 0.65rem;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
 }
 
 .register-btn {

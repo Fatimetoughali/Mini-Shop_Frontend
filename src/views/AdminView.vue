@@ -52,6 +52,16 @@ const getImageUrl = (product) => {
   return `${apiBase}/api/images/${cleanPath}`
 }
 
+const getProofUrl = (path) => {
+  if (!path) return ''
+  const cleanPath = path.replace(/^storage\//, '').replace(/^public\//, '')
+  let apiBase =
+    import.meta.env.VITE_API_URL ||
+    'https://morning-escarpment-60598-854031287859.herokuapp.com/api'
+  apiBase = apiBase.replace(/\/api$/, '')
+  return `${apiBase}/storage/${cleanPath}`
+}
+
 const fetchProducts = async (categoryId = null) => {
   loading.value = true
   error.value = null
@@ -210,6 +220,31 @@ const handleDelete = async (id, target = 'product') => {
   }
 }
 
+const handleUpdateStatus = async (id, status) => {
+  const confirmMsg =
+    status === 'completed'
+      ? locale.value === 'ar'
+        ? 'هل أنت متأكد من قبول هذا الطلب؟'
+        : "Confirmer l'acceptation de cette commande ?"
+      : locale.value === 'ar'
+        ? 'هل أنت متأكد من رفض هذا الطلب؟'
+        : 'Confirmer le refus de cette commande ?'
+
+  if (!confirm(confirmMsg)) return
+
+  loading.value = true
+  try {
+    await orderApi.updateStatus(id, status)
+    await fetchOrders()
+  } catch (err) {
+    console.error(err)
+    const msg = err.response?.data?.message || 'Erreur lors de la mise à jour du statut.'
+    alert(msg)
+  } finally {
+    loading.value = false
+  }
+}
+
 const getStatusLabel = (status) => {
   const labels = {
     pending: 'En attente',
@@ -245,6 +280,7 @@ const getPaymentLabel = (method) => {
 onMounted(() => {
   fetchProducts()
   fetchCategories()
+  fetchOrders()
 })
 </script>
 
@@ -271,6 +307,7 @@ onMounted(() => {
           :class="['tab-btn', { active: currentTab === 'orders' }]"
         >
           {{ t('admin.orders') }}
+          <span v-if="orders.length" class="count-pill">{{ orders.length }}</span>
         </button>
       </div>
       <button v-if="currentTab === 'products'" @click="openAddModal('product')" class="add-btn">
@@ -383,6 +420,8 @@ onMounted(() => {
             <th>Paiement</th>
             <th>Date</th>
             <th>Statut</th>
+            <th>Preuve</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -402,6 +441,35 @@ onMounted(() => {
               <span :class="['status-badge', order.status]">
                 {{ getStatusLabel(order.status) }}
               </span>
+            </td>
+            <td>
+              <a
+                v-if="order.payment_proof"
+                :href="getProofUrl(order.payment_proof)"
+                target="_blank"
+                class="proof-link"
+              >
+                🖼️ Voir
+              </a>
+              <span v-else-if="order.payment_method === 'cash'">---</span>
+              <span v-else class="no-proof">❌ Manquante</span>
+            </td>
+            <td class="actions">
+              <button
+                v-if="order.status === 'pending'"
+                @click="handleUpdateStatus(order.id, 'completed')"
+                class="accept-btn"
+              >
+                {{ locale === 'ar' ? 'قبول' : 'Accepter' }}
+              </button>
+              <button
+                v-if="order.status === 'pending'"
+                @click="handleUpdateStatus(order.id, 'cancelled')"
+                class="refuse-btn"
+              >
+                {{ locale === 'ar' ? 'رفض' : 'Refuser' }}
+              </button>
+              <span v-else class="done-label">---</span>
             </td>
           </tr>
         </tbody>
@@ -685,6 +753,70 @@ onMounted(() => {
   border-radius: 0.25rem;
   border: none;
   cursor: pointer;
+}
+
+.accept-btn {
+  color: #166534;
+  background: #dcfce7;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.accept-btn:hover {
+  background: #22c55e;
+  color: white;
+}
+
+.refuse-btn {
+  color: #991b1b;
+  background: #fee2e2;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.refuse-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.done-label {
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.proof-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #3b82f6;
+  font-weight: 600;
+  text-decoration: none;
+  background: #eff6ff;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.proof-link:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+.no-proof {
+  color: #ef4444;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .modal-overlay {

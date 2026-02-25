@@ -12,6 +12,7 @@ const showPaymentModal = ref(false)
 const paymentMethod = ref('') // 'bankily' or 'cash'
 const phoneNumber = ref('')
 const isProcessing = ref(false)
+const proofFile = ref(null)
 
 const getImageUrl = (product) => {
   if (product.image_url) return product.image_url
@@ -19,13 +20,22 @@ const getImageUrl = (product) => {
   if (!imagePath) return 'https://via.placeholder.com/400x300?text=No+Image'
   if (imagePath.startsWith('http')) return imagePath
   const cleanPath = imagePath.replace(/^storage\//, '')
-  let apiBase = import.meta.env.VITE_API_URL || 'https://morning-escarpment-60598-854031287859.herokuapp.com/api'
+  let apiBase =
+    import.meta.env.VITE_API_URL ||
+    'https://morning-escarpment-60598-854031287859.herokuapp.com/api'
   apiBase = apiBase.replace(/\/api$/, '')
   return `${apiBase}/api/images/${cleanPath}`
 }
 
 const handleCheckout = () => {
   showPaymentModal.value = true
+}
+
+const handleProofChange = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    proofFile.value = file
+  }
 }
 
 const confirmPayment = async () => {
@@ -42,17 +52,21 @@ const confirmPayment = async () => {
   isProcessing.value = true
 
   try {
-    const orderData = {
-      items: cart.items.map((item) => ({
-        id: item.id,
-        quantity: item.quantity,
-        price: item.price,
-      })),
-      payment_method: paymentMethod.value,
-      phone_number: phoneNumber.value,
+    const formData = new FormData()
+    formData.append('payment_method', paymentMethod.value)
+    formData.append('phone_number', phoneNumber.value)
+
+    if (proofFile.value) {
+      formData.append('payment_proof', proofFile.value)
     }
 
-    await orderApi.checkout(orderData)
+    cart.items.forEach((item, index) => {
+      formData.append(`items[${index}][id]`, item.id)
+      formData.append(`items[${index}][quantity]`, item.quantity)
+      formData.append(`items[${index}][price]`, item.price)
+    })
+
+    await orderApi.checkout(formData)
 
     isProcessing.value = false
 
@@ -73,12 +87,15 @@ const confirmPayment = async () => {
     cart.clearCart()
     showPaymentModal.value = false
     router.push('/')
+    isProcessing.value = false
   } catch (err) {
     console.error('Erreur lors de la commande:', err)
+    const serverMessage = err.response?.data?.message
     alert(
-      locale.value === 'ar'
-        ? 'حدث خطأ أثناء تسجيل طلبك. يرجى المحاولة مرة أخرى.'
-        : "Une erreur est survenue lors de l'enregistrement de votre commande. Veuillez réessayer.",
+      serverMessage ||
+        (locale.value === 'ar'
+          ? 'حدث خطأ أثناء تسجيل طلبك. يرجى المحاولة مرة أخرى.'
+          : "Une erreur est survenue lors de l'enregistrement de votre commande. Veuillez réessayer."),
     )
     isProcessing.value = false
   }
@@ -246,51 +263,117 @@ const confirmPayment = async () => {
           </label>
         </div>
 
-        <div
-          v-if="['bankily', 'sedad', 'masrvi', 'gazapay'].includes(paymentMethod)"
-          class="digital-payment-info"
-        >
-          <div class="instruction-box">
-            <p class="instruction-text">
-              {{ t('cart.digitalInstruction') }}
-              <span class="target-number">41613030</span>
-            </p>
-            <p class="screenshot-advice">
-              {{ t('cart.screenshotAdvice') }}
-              <a
-                href="https://api.whatsapp.com/send?phone=22241613030"
-                target="_blank"
-                class="whatsapp-link"
-              >
-                {{ locale === 'ar' ? 'أرسلها عبر الواتساب' : 'Envoyer par WhatsApp' }}
-              </a>
-            </p>
-          </div>
+        <!-- Section de paiement dynamique -->
+        <transition name="fade-slide">
+          <div
+            v-if="['bankily', 'sedad', 'masrvi', 'gazapay'].includes(paymentMethod)"
+            class="digital-payment-info"
+          >
+            <div class="instruction-box">
+              <p class="instruction-text">
+                {{ t('cart.digitalInstruction') }}
+                <span class="target-number">41613030</span>
+              </p>
+              <p class="screenshot-advice">
+                {{ t('cart.screenshotAdvice') }}
+                <a
+                  href="https://api.whatsapp.com/send?phone=22241613030"
+                  target="_blank"
+                  class="whatsapp-link"
+                >
+                  {{ locale === 'ar' ? 'أرسلها عبر الواتساب' : 'Envoyer par WhatsApp' }}
+                </a>
+              </p>
+            </div>
 
-          <div class="form-group">
-            <label>{{ t('cart.yourPhone') }}</label>
-            <input
-              v-model="phoneNumber"
-              type="tel"
-              placeholder="Ex: 41613030"
-              maxlength="8"
-              class="phone-input"
-            />
+            <div class="form-group">
+              <label>{{ t('cart.yourPhone') }}</label>
+              <input
+                v-model="phoneNumber"
+                type="tel"
+                placeholder="Ex: 41613030"
+                maxlength="8"
+                class="phone-input"
+              />
+            </div>
+
+            <div class="form-group proof-upload">
+              <label>{{
+                locale === 'ar'
+                  ? 'أرفق صورة التحويل (إلزامي)'
+                  : 'Joindre la preuve de paiement (Requis)'
+              }}</label>
+              <div class="file-input-wrapper">
+                <input
+                  type="file"
+                  @change="handleProofChange"
+                  accept="image/*"
+                  id="proof-upload"
+                  class="hidden-input"
+                />
+                <label for="proof-upload" class="file-label">
+                  <span v-if="!proofFile" class="upload-placeholder">
+                    <span class="upload-icon">📸</span>
+                    <span class="upload-text">
+                      {{
+                        locale === 'ar'
+                          ? 'اضغط هنا لرفع صورة التحويل'
+                          : 'Cliquez ici pour joindre la preuve'
+                      }}
+                    </span>
+                  </span>
+                  <span v-else class="file-name">
+                    <span class="check-icon">✅</span>
+                    {{ proofFile.name }}
+                  </span>
+                </label>
+              </div>
+            </div>
           </div>
-        </div>
+        </transition>
 
         <div class="modal-footer">
-          <button
-            @click="confirmPayment"
-            class="confirm-btn"
-            :disabled="!paymentMethod || isProcessing"
-          >
-            {{
-              isProcessing
-                ? t('common.loading')
-                : t('cart.confirmOrder') + ' (' + cart.totalPrice.toFixed(0) + ' MRU)'
-            }}
-          </button>
+          <!-- Condition pour les paiements numériques : n'afficher le bouton que si le fichier est chargé -->
+          <template v-if="['bankily', 'sedad', 'masrvi', 'gazapay'].includes(paymentMethod)">
+            <button
+              v-if="proofFile"
+              @click="confirmPayment"
+              class="confirm-btn success-btn"
+              :disabled="isProcessing"
+            >
+              {{
+                isProcessing
+                  ? t('common.loading')
+                  : (locale === 'ar' ? 'تاكيد الطلب' : 'Confirmer la demande') +
+                    ' (' +
+                    cart.totalPrice.toFixed(0) +
+                    ' MRU)'
+              }}
+            </button>
+            <div v-else class="upload-notice">
+              {{
+                locale === 'ar'
+                  ? 'يرجى إرفاق صورة التحويل للمتابعة'
+                  : 'Veuillez joindre la preuve pour confirmer'
+              }}
+            </div>
+          </template>
+
+          <!-- Pour le cash, le bouton est toujours visible -->
+          <template v-else-if="paymentMethod === 'cash'">
+            <button @click="confirmPayment" class="confirm-btn" :disabled="isProcessing">
+              {{
+                isProcessing
+                  ? t('common.loading')
+                  : t('cart.confirmOrder') + ' (' + cart.totalPrice.toFixed(0) + ' MRU)'
+              }}
+            </button>
+          </template>
+
+          <!-- Message si aucune méthode n'est choisie -->
+          <div v-else class="select-method-notice">
+            {{ locale === 'ar' ? 'يرجى اختيار طريقة الدفع أولاً' : 'Veuillez choisir une méthode' }}
+          </div>
         </div>
       </div>
     </div>
@@ -520,11 +603,24 @@ const confirmPayment = async () => {
 .payment-modal {
   background: white;
   width: 100%;
-  max-width: 450px;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
   border-radius: 1.5rem;
   padding: 2.5rem;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) #f1f5f9;
+}
+
+.payment-modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.payment-modal::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
 }
 
 .close-modal {
@@ -560,23 +656,33 @@ const confirmPayment = async () => {
 
 .payment-option {
   border: 2px solid #f1f5f9;
-  border-radius: 1rem;
-  padding: 1.25rem;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+  background: #f8fafc;
 }
 
-.payment-option input {
-  width: 20px;
-  height: 20px;
+.payment-option:hover {
+  border-color: var(--primary-color);
+  background: white;
+  transform: scale(1.02);
+}
+
+.payment-option input[type='radio'] {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
 }
 
 .payment-option.active {
   border-color: var(--primary-color);
-  background: #ecfdf5;
+  background: #f0f9ff;
+  box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.1);
 }
 
 .option-content {
@@ -660,6 +766,113 @@ const confirmPayment = async () => {
   text-align: center;
 }
 
+.proof-upload {
+  margin-top: 1.5rem;
+}
+
+.proof-upload label {
+  display: block;
+  font-weight: 700 !important;
+  margin-bottom: 0.75rem;
+}
+
+.file-input-wrapper {
+  position: relative;
+}
+
+.hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.file-label {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: #f8fafc;
+  border: 3px dashed #cbd5e1;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #64748b;
+  gap: 0.75rem;
+}
+
+.file-label:hover {
+  border-color: var(--primary-color);
+  background: #f0f9ff;
+  color: var(--primary-color);
+}
+
+.upload-icon {
+  font-size: 2.5rem;
+}
+
+.upload-text {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.check-icon {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+.file-label:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.file-name {
+  color: inherit;
+  font-weight: 600;
+}
+
+.upload-notice,
+.select-method-notice {
+  text-align: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  border: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.upload-notice {
+  border-color: var(--primary-color);
+  background: #f0f9ff;
+  color: var(--primary-color);
+}
+
+.success-btn {
+  background: #10b981 !important;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .confirm-btn {
   width: 100%;
   padding: 1.25rem;
@@ -692,5 +905,17 @@ const confirmPayment = async () => {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Animations de transition */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.4s ease;
+}
+
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
 }
 </style>
