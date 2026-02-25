@@ -197,7 +197,13 @@ const handleSubmit = async () => {
     closeModal()
   } catch (err) {
     console.error('Submit Error:', err)
-    alert("Erreur lors de l'enregistrement.")
+    let msg = "Erreur lors de l'enregistrement."
+    if (err.response) {
+      msg = `Erreur ${err.response.status}: ${err.response.data.message || JSON.stringify(err.response.data)}`
+    } else if (err.message) {
+      msg = err.message
+    }
+    alert(msg)
   } finally {
     loading.value = false
   }
