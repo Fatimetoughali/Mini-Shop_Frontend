@@ -199,7 +199,8 @@ const handleSubmit = async () => {
     console.error('Submit Error:', err)
     let msg = "Erreur lors de l'enregistrement."
     if (err.response) {
-      msg = `Erreur ${err.response.status}: ${err.response.data.message || JSON.stringify(err.response.data)}`
+      // On affiche tout l'objet d'erreur pour voir le fichier et la ligne
+      msg = `Erreur ${err.response.status}: ${JSON.stringify(err.response.data, null, 2)}`
     } else if (err.message) {
       msg = err.message
     }
